@@ -1,0 +1,54 @@
+#!/bin/bash
+# No makefile build
+
+# Color Defines
+NoCOLOR='\033[0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+
+src=$(find . -name "*\.cpp")
+
+if [ "src" == "" ]; then
+  exit 1
+fi
+
+obj=$(echo "$src" | sed -e 's@src@obj@g' | sed -e 's@cpp@o@g' | tr -s "\n" " ")
+obj1="$obj"
+
+if [ "obj" == "" ]; then
+  exit 2
+fi
+
+directories=$(find src -type d | sed -e 's@src@obj@g' | tr -s "\n" " ")
+for di in $directories; do
+  if [ ! -d "$di" ]; then
+    mkdir "$di"
+  fi
+done
+
+if [ ! -d "bin" ]; then
+  mkdir "bin"
+fi
+
+bin="./bin/binary"
+cxx="g++"
+LD="-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio"
+cFlags="-std=c++11 -Werror -Wall -I include/"
+
+for file in $src; do
+  objA=$(echo "$obj" | cut -d " " -f1)
+  echo -e "$GREEN[C++]\t $YELLOW$file $GREEN""to"" $YELLOW$objA"
+
+  # Compile, and get error output
+  $cxx $cFlags -o $objA -c $file
+  if [ $? -ne 0 ]; then
+    echo -e "$RED""ERROR COMPILLING FILE: $file"
+    exit 3
+  fi
+
+  obj=$(echo "$obj" | cut -d " " -f 2-)
+done
+
+echo -e "$GREEN[C++/LD] $YELLOW$obj1""$GREEN""to"" $YELLOW$bin"
+$cxx $LD -o $bin $obj1
