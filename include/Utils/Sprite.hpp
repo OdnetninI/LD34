@@ -48,6 +48,7 @@ class Sprite {
         void        stopAnimation         ();
 
         sf::FloatRect getGlobalBounds();
+        sf::Sprite* getSprite();
 };
 
 #endif // __SPRITE_HPP__

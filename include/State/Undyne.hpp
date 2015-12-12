@@ -22,6 +22,9 @@ class Undyne : public State {
 
     sf::Time delaySpear;
     sf::Time keyBoardDelay;
+
+    sf::Text* score;
+    uint32_t puntos;
 };
 
 #endif // __UNDYNE_HPP__

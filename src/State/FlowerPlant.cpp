@@ -1,10 +1,17 @@
 #include "State/FlowerPlant.hpp"
+#include <sstream>
 
 FlowerPlant::FlowerPlant (sf::RenderWindow* window, EventManager* events, StateManager* states, TextMaker* textmaker) {
     this->m_window = window;
     this->m_eventmng = events;
     this->m_statemng = states;
     this->m_textMaker = textmaker;
+
+    score = textmaker->createText();
+    score->setCharacterSize(14);
+    score->setColor(sf::Color::Black);
+    score->setPosition(665,25);
+    puntos = 0;
 
     ll = 0;
     sol = 0;
@@ -44,11 +51,11 @@ FlowerPlant::FlowerPlant (sf::RenderWindow* window, EventManager* events, StateM
 }
 
 FlowerPlant::~FlowerPlant () {
-
+  delete score;
 }
 
 void FlowerPlant::update(sf::Time deltatime) {
-
+  if (!m_eventmng->isFocused()) return;
   elapsed += deltatime;
   if (elapsed >= sf::seconds(0.5)) {
     if (m_eventmng->getKey(sf::Keyboard::S)) {
@@ -96,6 +103,10 @@ void FlowerPlant::update(sf::Time deltatime) {
     elapsed2 = sf::Time::Zero;
   }
 
+  std::stringstream sstm;
+  sstm << "Score: " << puntos;
+  score->setString(sstm.str());
+
   elapsed3 += deltatime;
   if (elapsed3 >= sf::seconds(4)) {
     if (sol == 0 || ll == 0) {
@@ -103,6 +114,7 @@ void FlowerPlant::update(sf::Time deltatime) {
       sol = 0;
       ll = 0;
       flor->kill();
+      if (puntos >= 5) puntos -= 5;
     }
     elapsed3 = sf::Time::Zero;
   }
@@ -115,8 +127,10 @@ void FlowerPlant::update(sf::Time deltatime) {
   if ((ll > flor->getLluvia() - flor->getError() && ll < flor->getLluvia() + flor->getError()) &&
       (sol > flor->getSol() - flor->getError() && sol < flor->getSol() + flor->getError())) {
         flor->grow();
-        sol = 10;
-        ll = 10;
+        if (puntos <= 65565-10)
+          puntos += 10;
+        sol = 1;
+        ll = 1;
       }
 
   fondo.setIndex(estado+2);
@@ -145,4 +159,5 @@ void FlowerPlant::render(sf::Time deltatime) {
   L.render(this->m_window);
   LBar.render(this->m_window);
   flor->getSprite()->render(this->m_window);
+  this->m_window->draw(*score);
 }

@@ -31,10 +31,12 @@ class FlowerPlant : public State {
       Sol -> sol+2 ll-1
       Solx2 -> sol+4 ll-3
     */
-    bool pausa;
+    uint32_t puntos;
     sf::Time elapsed;   // Button Delay
     sf::Time elapsed2;  // Weather Delay
     sf::Time elapsed3;  // Death Delay
+
+    sf::Text* score;
 };
 
 #endif // __FLOWER_PLANT_HPP__

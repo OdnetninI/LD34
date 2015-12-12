@@ -97,3 +97,7 @@ void Sprite::stopAnimation () {
 sf::FloatRect Sprite::getGlobalBounds() {
   return this->m_sprite.getGlobalBounds();
 }
+
+sf::Sprite* Sprite::getSprite() {
+  return &this->m_sprite;
+}

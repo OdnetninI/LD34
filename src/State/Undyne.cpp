@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "Events/EventManager.hpp"
+#include <sstream>
 
 float SPEED_SPEAR = 2;
 #define SPEARS 2
@@ -13,6 +14,11 @@ Undyne::Undyne (sf::RenderWindow* window, EventManager* events, StateManager* st
     this->m_eventmng = events;
     this->m_statemng = states;
     this->m_textMaker = textmaker;
+    puntos = 0;
+    score = m_textMaker->createText();
+    score->setCharacterSize(16);
+    score->setColor(sf::Color::White);
+    score->setPosition(25,25);
     std::srand(std::time(nullptr));
 
     greenEmeraldofHeart.load("Data/Green Emerald of Heart.png");
@@ -35,6 +41,10 @@ Undyne::~Undyne () {
 }
 
 void Undyne::update(sf::Time deltatime) {
+  if (!m_eventmng->isFocused()) return;
+  if (m_eventmng->getKey(sf::Keyboard::Escape))
+    m_statemng->popLooped();
+
   keyBoardDelay += deltatime;
   if (keyBoardDelay >= sf::seconds(0.15)) {
     if (!m_eventmng->getKey(sf::Keyboard::A) && !m_eventmng->getKey(sf::Keyboard::S)) {
@@ -90,14 +100,21 @@ void Undyne::update(sf::Time deltatime) {
 
     if (greenEmeraldofHeart.getGlobalBounds().intersects(spears[i].getSprite()->getGlobalBounds())) {
       if (spears[i].getDir() == myDir) {
+        if (puntos <= 65535-10) puntos += 10;
         SPEED_SPEAR = (((SPEED_SPEAR + 0.08) > 10)? 10 : (SPEED_SPEAR + 0.08));
         SPEAR_RATE -= 0.01;
         if (SPEAR_RATE < 0.1) SPEAR_RATE = 0.1;
       }
+      else
+        if (puntos >= 5) puntos -= 5;
       spears[i].setDir(-1);
       spears[i].getSprite()->setPosition(-128,-128);
     }
   }
+
+  std::stringstream sstrm;
+  sstrm << "Score: " << puntos;
+  score->setString(sstrm.str());
 
   greenEmeraldofHeart.update(deltatime);
 }
@@ -107,4 +124,5 @@ void Undyne::render(sf::Time deltatime) {
     m_window->draw((*spears[i].getSprite()));
   }
   greenEmeraldofHeart.render(m_window);
+  m_window->draw(*score);
 }
