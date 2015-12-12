@@ -93,3 +93,7 @@ void Sprite::playAnimation () {
 void Sprite::stopAnimation () {
   this->m_playing = false;
 }
+
+sf::FloatRect Sprite::getGlobalBounds() {
+  return this->m_sprite.getGlobalBounds();
+}

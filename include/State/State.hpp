@@ -13,6 +13,7 @@ class State {
     StateManager* m_statemng;
     TextMaker* m_textMaker;
 
+    State() {}
     State(sf::RenderWindow* window, EventManager* events, StateManager* states, TextMaker* textmaker) {
         this->m_window = window;
         this->m_eventmng = events;

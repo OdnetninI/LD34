@@ -3,6 +3,8 @@
 
 #define WIN_X 832
 #define WIN_Y 512
+//#define WIN_X 1280
+//#define WIN_Y 720
 #define WIN_T "LD 34"
 
 #include <SFML/Graphics.hpp>
